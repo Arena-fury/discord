@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mini‑chat</title>
+</head>
+<body>
+  <h1>Demo Chat</h1>
+
+  <!-- zone d'affichage des messages -->
+  <div id="log"></div>
+
+  <!-- zone d'envoi -->
+  <input id="msg" autocomplete="off" />
+  <button onclick="send()">Envoyer</button>
+
+  <script>
+    const user = prompt("Votre pseudo ?");
+    const peer = prompt("Parlez à ?");
+    /* ⚠️ en développement on utilise le protocole non chiffré ws:// */
+    const ws = new WebSocket(`ws://localhost:8000/chat/ws/${user}/${peer}`);
+
+    ws.onmessage = (ev) => {
+      const p = document.createElement('p');
+      p.textContent = ev.data;
+      document.getElementById('log').appendChild(p);
+    };
+
+    function send() {
+      ws.send(document.getElementById('msg').value);
+      document.getElementById('msg').value = "";
+    }
+  </script>
+</body>
+</html>
